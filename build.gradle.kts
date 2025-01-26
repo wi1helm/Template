@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("maven-publish") // Add the Maven Publish plugin
+    id("maven-publish")
 }
 
 group = "nub.wi1helm.template"
@@ -9,7 +9,7 @@ description = "A simple template inventory library"
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") // Include Jitpack repository
 }
 
 dependencies {
@@ -24,12 +24,6 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks {
-    compileJava {
-        options.encoding = "UTF-8"
-    }
-}
-
 java {
     withSourcesJar()
     withJavadocJar()
@@ -41,18 +35,17 @@ java {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            from(components["java"]) // Publish the Java component
+            from(components["java"])
 
-            // Customize POM details if necessary
             pom {
                 name.set("Template Inventory Library")
                 description.set("A simple template inventory library for Minestom.")
-                url.set("https://github.com/wi1helm/T") // Replace with your repo URL
+                url.set("https://github.com/wi1helm/T") // Update with your repository URL
 
                 licenses {
                     license {
-                        name = "The GNU Affero General Public License Version 3"
-                        url = "https://www.gnu.org/licenses/agpl-3.0.txt"
+                        name.set("GNU Affero General Public License Version 3")
+                        url.set("https://www.gnu.org/licenses/agpl-3.0.txt")
                     }
                 }
             }
