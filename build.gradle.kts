@@ -18,10 +18,23 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-gson:4.17.0")
 }
 
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
+    options.encoding = "UTF-8"
+}
+
 tasks {
     compileJava {
         options.encoding = "UTF-8"
     }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 // Maven Publish Configuration
