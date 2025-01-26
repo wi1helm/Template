@@ -2,7 +2,9 @@ package nub.wi1helm.template.items;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import rip.snicon.compass.inventory.TemplateItem;
+import nub.wi1helm.template.TemplateInventoryEvent;
+import nub.wi1helm.template.TemplateItem;
+
 
 public class BackgroundItem extends TemplateItem {
 
@@ -23,12 +25,12 @@ public class BackgroundItem extends TemplateItem {
     }
 
     @Override
-    public void onUse(Player player) {
+    public void onUse(TemplateInventoryEvent event) {
 
     }
 
     @Override
-    public void onDrop(Player player) {
+    public void onDrop(TemplateInventoryEvent event) {
 
     }
 }

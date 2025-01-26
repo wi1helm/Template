@@ -1,16 +1,18 @@
 package nub.wi1helm.template.items;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import rip.snicon.compass.inventory.TemplateItem;
-import rip.snicon.compass.utils.TextUtils;
+import nub.wi1helm.template.TemplateInventoryEvent;
+import nub.wi1helm.template.TemplateItem;
+
 
 public class CloseButton extends TemplateItem {
 
     public CloseButton() {
         super(Material.BARRIER);
 
-        setName(TextUtils.convertStringToComponent("<gray>» <red>Close</red> «</gray>"));
+        setName(MiniMessage.miniMessage().deserialize("<gray>» <red>Close</red> «</gray>"));
     }
 
 
@@ -25,12 +27,12 @@ public class CloseButton extends TemplateItem {
     }
 
     @Override
-    public void onUse(Player player) {
-        player.closeInventory();
+    public void onUse(TemplateInventoryEvent event) {
+        event.getPlayer().closeInventory();
     }
 
     @Override
-    public void onDrop(Player player) {
+    public void onDrop(TemplateInventoryEvent event) {
 
     }
 }

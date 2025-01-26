@@ -1,17 +1,16 @@
 package nub.wi1helm.template;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.Event;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
+import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.tag.Tag;
+import net.minestom.server.MinecraftServer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TemplateHandler {
     private static final Map<UUID, TemplateItem> templateRegistry = new HashMap<>();
@@ -29,49 +28,70 @@ public class TemplateHandler {
     }
 
     public static void initialize() {
-        MinecraftServer.getGlobalEventHandler().addListener(InventoryPreClickEvent.class, event -> {
-            event.setCancelled(true);
+        MinecraftServer.getGlobalEventHandler().addListener(InventoryPreClickEvent.class, e -> {
+            TemplateInventoryEvent event = new TemplateInventoryEvent(
+                    e.getPlayer(),
+                    e.getInventory(),
+                    e.getClickedItem(),
+                    e.getClickType(),
+                    null,
+                    e.getSlot()
+            );
 
-            Player player = event.getPlayer();
-            ItemStack itemStack = event.getClickedItem();
-            if (itemStack.hasTag(Tag.UUID("uuid"))) {
-                UUID itemUUID = itemStack.getTag(Tag.UUID("uuid"));
-                TemplateItem templateItem = getTemplateByIdentifier(itemUUID);
-
-                if (templateItem != null) {
-                    templateItem.onUse(player);
-                }
-            }
-        });
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerUseItemEvent.class, event -> {
-            event.setCancelled(true);
-
-            Player player = event.getPlayer();
-            ItemStack itemStack = event.getItemStack();
-            if (itemStack.hasTag(Tag.UUID("uuid"))) {
-                UUID itemUUID = itemStack.getTag(Tag.UUID("uuid"));
-                TemplateItem templateItem = getTemplateByIdentifier(itemUUID);
-
-                if (templateItem != null) {
-                    templateItem.onUse(player);
-                }
+            handleCombinedEvent(event);
+            if (event.isCancelled()) {
+                e.setCancelled(true);
             }
         });
 
-        MinecraftServer.getGlobalEventHandler().addListener(ItemDropEvent.class, event -> {
-            event.setCancelled(true);
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerUseItemEvent.class, e -> {
+            TemplateInventoryEvent event = new TemplateInventoryEvent(
+                    e.getPlayer(),
+                    null,
+                    e.getItemStack(),
+                    null,
+                    e.getHand(),
+                    -1
+            );
 
-            Player player = event.getPlayer();
-            ItemStack itemStack = event.getItemStack();
-            if (itemStack.hasTag(Tag.UUID("uuid"))) {
-                UUID itemUUID = itemStack.getTag(Tag.UUID("uuid"));
-                TemplateItem templateItem = getTemplateByIdentifier(itemUUID);
-
-                if (templateItem != null) {
-                    templateItem.onDrop(player);
-                }
+            handleCombinedEvent(event);
+            if (event.isCancelled()) {
+                e.setCancelled(true);
             }
         });
 
+        MinecraftServer.getGlobalEventHandler().addListener(ItemDropEvent.class, e -> {
+            TemplateInventoryEvent combinedEvent = new TemplateInventoryEvent(
+                    e.getPlayer(),
+                    null,
+                    e.getItemStack(),
+                    null,
+                    null,
+                    -1
+            );
+
+            handleCombinedEvent(combinedEvent);
+            if (combinedEvent.isCancelled()) {
+                e.setCancelled(true);
+            }
+        });
     }
+
+    private static void handleCombinedEvent(TemplateInventoryEvent event) {
+        event.setCancelled(true);
+        if (event.getItemStack().hasTag(Tag.UUID("uuid"))) {
+            UUID itemUUID = event.getItemStack().getTag(Tag.UUID("uuid"));
+            TemplateItem templateItem = getTemplateByIdentifier(itemUUID);
+
+            if (templateItem != null) {
+                if (event.getClickType() == null) {
+                    templateItem.onDrop(event);
+                }
+
+                templateItem.onUse(event);
+            }
+        }
+    }
+
+
 }

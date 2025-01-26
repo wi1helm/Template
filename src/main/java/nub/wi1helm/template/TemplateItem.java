@@ -12,8 +12,7 @@ import net.minestom.server.item.component.DyedItemColor;
 import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.tag.Tag;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class TemplateItem {
     private final UUID identifier;
@@ -115,9 +114,9 @@ public abstract class TemplateItem {
 
     protected abstract void personalize(Player player);
 
-    public abstract void onUse(Player player);
+    public abstract void onUse(TemplateInventoryEvent event);
 
-    public abstract void onDrop(Player player);
+    public abstract void onDrop(TemplateInventoryEvent event);
 
     public UUID getIdentifier() {
         return identifier;
