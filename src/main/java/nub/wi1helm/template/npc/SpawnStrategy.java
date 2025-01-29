@@ -39,7 +39,7 @@ public enum SpawnStrategy {
             });
 
             // Set mount position slightly lower for sitting effect
-            Pos mountPosition = npc.getSpawnPosition().add(0, -mount.getEntityType().height(), 0);
+            Pos mountPosition = npc.getSpawnPosition();
             mount.setInstance(npc.getInstance(), mountPosition);
 
             // Ensure previous instance is removed
