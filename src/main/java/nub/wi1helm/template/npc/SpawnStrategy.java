@@ -70,6 +70,18 @@ public enum SpawnStrategy {
                 entity.updateNewViewer(player);
             });
 
+            if (npc.getEntityType() == EntityType.PLAYER) {
+                List<PlayerInfoUpdatePacket.Property> properties = (npc.getSkin() != null)
+                        ? List.of(new PlayerInfoUpdatePacket.Property("textures", npc.getSkin().textures(), npc.getSkin().signature()))
+                        : List.of();
+
+                PlayerInfoUpdatePacket.Entry entry = new PlayerInfoUpdatePacket.Entry(
+                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null
+                );
+
+                player.sendPacket(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry));
+            }
+
             // Ensure NPC is visible for players
             npc.updateNewViewer(player);
         }
