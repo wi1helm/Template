@@ -47,10 +47,9 @@ public enum SpawnStrategy {
 
             // Attach NPC to mount
             mount.addPassenger(npc);
-            player.sendPacket(new SetPassengersPacket(mount.getEntityId(), List.of(npc.getEntityId())));
             // Spawn the mount
             player.sendPacket(mount.getEntityType().registry().spawnType().getSpawnPacket(mount));
-            mount.updateNewViewer(player);
+
 
             // Ensure NPC metadata is applied (e.g., skin layers)
             npc.editEntityMeta(PlayerMeta.class, meta -> {
@@ -84,6 +83,7 @@ public enum SpawnStrategy {
 
             // Ensure NPC is visible for players
             npc.updateNewViewer(player);
+            mount.updateNewViewer(player);
         }
 
         @Override
