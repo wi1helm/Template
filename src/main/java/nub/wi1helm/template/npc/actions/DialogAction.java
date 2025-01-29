@@ -2,7 +2,7 @@ package nub.wi1helm.template.npc.actions;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
-import rip.snicon.compass.npc.AbstractAction;
+import nub.wi1helm.template.npc.AbstractAction;
 
 public abstract class DialogAction extends AbstractAction {
 

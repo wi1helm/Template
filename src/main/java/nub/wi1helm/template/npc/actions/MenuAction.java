@@ -2,7 +2,8 @@ package nub.wi1helm.template.npc.actions;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
-import rip.snicon.compass.npc.AbstractAction;
+import nub.wi1helm.template.npc.AbstractAction;
+
 
 public abstract class MenuAction extends AbstractAction {
 
