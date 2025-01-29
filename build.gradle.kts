@@ -4,8 +4,8 @@ plugins {
 }
 
 group = "nub.wi1helm.template"
-version = "0.1"
-description = "A simple template inventory library"
+version = "0.2"
+description = "A simple template based Inventory and NPC library"
 
 repositories {
     mavenCentral()
@@ -38,9 +38,9 @@ publishing {
             from(components["java"])
 
             pom {
-                name.set("Template Inventory Library")
-                description.set("A simple template inventory library for Minestom.")
-                url.set("https://github.com/wi1helm/T") // Update with your repository URL
+                name.set("Template Inventory / NPC Library")
+                description.set("A simple template based inventory & npc library for Minestom.")
+                url.set("https://github.com/wi1helm/Template") // Update with your repository URL
 
                 licenses {
                     license {

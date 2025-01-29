@@ -1,12 +1,8 @@
-package nub.wi1helm.template;
+package nub.wi1helm.template.inventory;
 
-import net.minestom.server.entity.Player;
-import net.minestom.server.event.Event;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
-import net.minestom.server.event.trait.CancellableEvent;
-import net.minestom.server.item.ItemStack;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.MinecraftServer;
 

@@ -1,10 +1,10 @@
-package nub.wi1helm.template.items;
+package nub.wi1helm.template.inventory.items;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.Material;
-import nub.wi1helm.template.TemplateInventoryEvent;
-import nub.wi1helm.template.TemplateItem;
+import nub.wi1helm.template.inventory.TemplateInventoryEvent;
+import nub.wi1helm.template.inventory.TemplateItem;
 
 
 public class CloseButton extends TemplateItem {

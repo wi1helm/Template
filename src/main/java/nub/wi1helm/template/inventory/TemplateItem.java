@@ -1,4 +1,4 @@
-package nub.wi1helm.template;
+package nub.wi1helm.template.inventory;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
