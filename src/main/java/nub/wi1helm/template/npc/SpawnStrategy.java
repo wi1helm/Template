@@ -11,6 +11,7 @@ import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
+import net.minestom.server.network.packet.server.play.SetPassengersPacket;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public enum SpawnStrategy {
 
             // Attach NPC to mount
             mount.addPassenger(npc);
-
+            player.sendPacket(new SetPassengersPacket(mount.getEntityId(), List.of(npc.getEntityId())));
             // Spawn the mount
             player.sendPacket(mount.getEntityType().registry().spawnType().getSpawnPacket(mount));
             mount.updateNewViewer(player);
@@ -171,20 +172,7 @@ public enum SpawnStrategy {
         @Override
         public void spawn(TemplateNPC npc, Player player) {
 
-            // Check if the NPC already has the AI goal before adding it
-            boolean alreadyHasGoal = npc.getAIGroups().stream()
-                    .flatMap(group -> group.getGoalSelectors().stream()) // Get all goal selectors
-                    .anyMatch(goal -> goal.equals(npc.getGoal())); // Check if it already exists
-
-            if (!alreadyHasGoal && npc.getGoal() != null) {
-                npc.addAIGroup(
-                        new EntityAIGroupBuilder()
-                                .addGoalSelector(npc.getGoal())
-                                .build()
-                );
-            }
-
-
+            npc.getAIGroups().clear(); // Removes all AI goals
 
             npc.editEntityMeta(PlayerMeta.class, meta -> {
                 npc.getSkinLayer().apply(meta); // Apply full skin layers

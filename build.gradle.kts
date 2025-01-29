@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "nub.wi1helm.template"
-version = "0.2.1"
+version = "0.2.3"
 description = "A simple template based Inventory and NPC library"
 
 repositories {

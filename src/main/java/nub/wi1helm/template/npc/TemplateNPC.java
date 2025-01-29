@@ -71,7 +71,7 @@ public abstract class TemplateNPC extends EntityCreature {
     // Spawn & Despawn Methods
 
     protected void setSpawnStrategy(SpawnStrategy spawnStrategy){
-        if (this.spawnStrategy.equals(SpawnStrategy.NONE)) this.spawnStrategy = spawnStrategy;
+        this.spawnStrategy = spawnStrategy;
     }
 
     public void spawn(Player player) {
