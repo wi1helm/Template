@@ -1,4 +1,3 @@
-
 package nub.wi1helm.template.npc.goals;
 
 import net.minestom.server.coordinate.Pos;
@@ -44,24 +43,18 @@ public final class LookAtPlayerGoal extends GoalSelector {
             return;
         }
 
-        // Calculate the target's head position
-        Pos targetHeadPosition = target.getPosition().add(0, target.getEyeHeight(), 0);
-
-        // Adjust for the sitting pose
-        if (entityCreature.getPose() == Entity.Pose.SITTING) {
-            targetHeadPosition = targetHeadPosition.add(0, EntityType.ARMOR_STAND.registry().eyeHeight(), 0);
-        }
+        // Adjust NPC head position based on sitting or standing
+        double sittingYOffset = entityCreature.getPose() == Entity.Pose.SITTING ? entityCreature.getEntityType().height() +0.5 : 0.0;
+        Pos targetHeadPosition = target.getPosition().add(0, target.getEyeHeight() + sittingYOffset, 0);
 
         // Make the entity look at the adjusted position
         entityCreature.lookAt(targetHeadPosition);
     }
 
-
-
     @Override
     public boolean shouldEnd() {
-        // End if there's no valid target
-        return target == null;
+        // Stop looking if target is gone OR too far away
+        return target == null || entityCreature.getDistanceSquared(target) > range * range;
     }
 
     @Override
@@ -71,8 +64,14 @@ public final class LookAtPlayerGoal extends GoalSelector {
     }
 
     private void resetHeadRotation() {
-        // Reset the creature's rotation to its default view (facing forward)
-        entityCreature.refreshPosition(defaultPos);
+        // TODO fix the bug where sitting npcs dont reset looking to degautl
+        entityCreature.teleport(new Pos(
+                entityCreature.getPosition().x(),
+                entityCreature.getPosition().y(),
+                entityCreature.getPosition().z(),
+                defaultPos.yaw(), // Restore default yaw
+                defaultPos.pitch() // Restore default pitch
+        ));
     }
 
     public Entity findTarget() {

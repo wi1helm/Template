@@ -28,7 +28,20 @@ public enum SpawnStrategy {
     SITTING {
         @Override
         public void spawn(TemplateNPC npc, Player player) {
-            System.out.println("Spawning " + npc.getName() + " in a sitting position.");
+
+            // Check if the NPC already has the AI goal before adding it
+            boolean alreadyHasGoal = npc.getAIGroups().stream()
+                    .flatMap(group -> group.getGoalSelectors().stream()) // Get all goal selectors
+                    .anyMatch(goal -> goal.equals(npc.getGoal())); // Check if it already exists
+
+            if (!alreadyHasGoal && npc.getGoal() != null) {
+                npc.addAIGroup(
+                        new EntityAIGroupBuilder()
+                                .addGoalSelector(npc.getGoal())
+                                .build()
+                );
+            }
+
 
             // Create a mount entity (Armor Stand)
             Entity mount = new Entity(EntityType.ARMOR_STAND);
@@ -54,11 +67,12 @@ public enum SpawnStrategy {
             // Ensure NPC metadata is applied (e.g., skin layers)
             npc.editEntityMeta(PlayerMeta.class, meta -> {
                 npc.getSkinLayer().apply(meta);
+                npc.setPose(Entity.Pose.SITTING);
             });
 
             // Ensure NPC name is displayed above correctly
             double offset = 0.3;
-            double baseHeight = npc.getEntityType().height();
+            double baseHeight = npc.getEntityType().height() - 0.7;
 
             npc.getName().getText().forEach((integer, entity) -> {
                 Pos hologramPos = npc.getSpawnPosition().add(0, baseHeight + (integer) * offset, 0);
@@ -181,9 +195,9 @@ public enum SpawnStrategy {
         }
     },
     LAYING {
+        //TODO Make a better lying pose, with hitbox and name being correct
         @Override
         public void spawn(TemplateNPC npc, Player player) {
-
             npc.getAIGroups().clear(); // Removes all AI goals
 
             npc.editEntityMeta(PlayerMeta.class, meta -> {

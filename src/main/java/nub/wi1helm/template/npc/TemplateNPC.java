@@ -22,7 +22,7 @@ public abstract class TemplateNPC extends EntityCreature {
     private SpawnStrategy spawnStrategy = SpawnStrategy.STANDING;
     private Pos spawnPosition = new Pos(0,0,0);
     private PlayerSkin skin;
-    private ActionList actionList;
+    private ActionList actionList = ActionList.empty();
     private Boolean exist = false;
     private Integer viewDistance = 32;
     private SkinLayer skinLayer = SkinLayer.NONE;
@@ -77,7 +77,6 @@ public abstract class TemplateNPC extends EntityCreature {
     public void spawn(Player player) {
         if (!shouldSpawn(player)) return; // Ensure spawn only happens if needed
         this.exist = true;
-        player.sendMessage("Spawning NPC: " + this.getIdentifier());
         this.personalize(player);
         this.spawnStrategy.spawn(this, player);
 
@@ -91,7 +90,6 @@ public abstract class TemplateNPC extends EntityCreature {
     public void despawn(Player player) {
         if (!shouldDespawn(player)) return; // Ensure despawn only happens if needed
         this.exist = false;
-        player.sendMessage("Despawning NPC: " + this.getIdentifier());
         this.spawnStrategy.despawn(this, player);
     }
 
@@ -139,6 +137,7 @@ public abstract class TemplateNPC extends EntityCreature {
 // Action Methods
 
     public final void onInteract(Player player) {
+        if (getActionList().isEmpty()) return;
         getActionList().executeNext(player);
     }
 

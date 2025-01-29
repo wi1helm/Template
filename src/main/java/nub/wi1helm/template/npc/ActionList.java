@@ -3,6 +3,7 @@ package nub.wi1helm.template.npc;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -25,6 +26,11 @@ public class ActionList {
             this.currentAction = this.actions.get(0); // Start with the first action
         }
     }
+
+    public ActionList() {
+        this.actions = new HashMap<>();
+    }
+
 
     public void executeNext(Player player) {
         if (currentAction == null) return;
@@ -68,5 +74,9 @@ public class ActionList {
 
     public boolean isEmpty() {
         return actions.isEmpty();
+    }
+
+    public static ActionList empty() {
+        return new ActionList();
     }
 }
