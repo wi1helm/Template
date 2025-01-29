@@ -138,7 +138,7 @@ public abstract class TemplateNPC extends EntityCreature {
     }
 // Action Methods
 
-    public void onInteract(Player player) {
+    private void onInteract(Player player) {
         getActionList().executeNext(player);
     }
 
