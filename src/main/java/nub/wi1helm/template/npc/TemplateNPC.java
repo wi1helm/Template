@@ -13,6 +13,8 @@ import net.minestom.server.scoreboard.Team;
 import net.minestom.server.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class TemplateNPC extends EntityCreature {
@@ -23,10 +25,10 @@ public abstract class TemplateNPC extends EntityCreature {
     private Pos spawnPosition = new Pos(0,0,0);
     private PlayerSkin skin;
     private ActionList actionList = ActionList.empty();
-    private Boolean exist = false;
     private Integer viewDistance = 32;
     private SkinLayer skinLayer = SkinLayer.NONE;
     private GoalSelector goal;
+    private final Set<Player> visiblePlayers = new HashSet<>();
     // Finals
     private final String identifier;
 
@@ -75,27 +77,24 @@ public abstract class TemplateNPC extends EntityCreature {
     }
 
     public void spawn(Player player) {
-        if (!shouldSpawn(player)) return; // Ensure spawn only happens if needed
-        this.exist = true;
+        if (!shouldSpawn(player)) return;
         this.personalize(player);
+        this.markVisible(player);
         this.spawnStrategy.spawn(this, player);
-
     }
 
-    private Boolean shouldSpawn(Player player) {
-        Pos playerPosition = player.getPosition();
-        return playerPosition.distance(this.getSpawnPosition()) <= viewDistance && !exist;
+    private boolean shouldSpawn(Player player) {
+        return player.getPosition().distance(this.getSpawnPosition()) <= viewDistance && !isVisibleTo(player);
     }
 
     public void despawn(Player player) {
-        if (!shouldDespawn(player)) return; // Ensure despawn only happens if needed
-        this.exist = false;
+        if (!shouldDespawn(player)) return;
         this.spawnStrategy.despawn(this, player);
+        this.markInvisible(player);
     }
 
-    private Boolean shouldDespawn(Player player) {
-        Pos playerPosition = player.getPosition();
-        return playerPosition.distance(this.getSpawnPosition()) > viewDistance && exist;
+    private boolean shouldDespawn(Player player) {
+        return player.getPosition().distance(this.getSpawnPosition()) > viewDistance && isVisibleTo(player);
     }
 
 
@@ -121,10 +120,6 @@ public abstract class TemplateNPC extends EntityCreature {
 
     public void setSkin(PlayerSkin skin) {
         this.skin = skin;
-    }
-
-    public Boolean doExist() {
-        return exist;
     }
 
     public Integer getViewDistance() {
@@ -163,6 +158,18 @@ public abstract class TemplateNPC extends EntityCreature {
 
     public void setGoal(GoalSelector goal) {
         this.goal = goal;
+    }
+
+    public boolean isVisibleTo(Player player) {
+        return visiblePlayers.contains(player);
+    }
+
+    public void markVisible(Player player) {
+        visiblePlayers.add(player);
+    }
+
+    public void markInvisible(Player player) {
+        visiblePlayers.remove(player);
     }
 }
 

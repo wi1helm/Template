@@ -29,6 +29,8 @@ public enum SpawnStrategy {
         @Override
         public void spawn(TemplateNPC npc, Player player) {
 
+            despawn(npc, player);
+
             // Check if the NPC already has the AI goal before adding it
             boolean alreadyHasGoal = npc.getAIGroups().stream()
                     .flatMap(group -> group.getGoalSelectors().stream()) // Get all goal selectors
@@ -132,6 +134,8 @@ public enum SpawnStrategy {
         @Override
         public void spawn(TemplateNPC npc, Player player) {
 
+            despawn(npc, player);
+
             // Check if the NPC already has the AI goal before adding it
             boolean alreadyHasGoal = npc.getAIGroups().stream()
                     .flatMap(group -> group.getGoalSelectors().stream()) // Get all goal selectors
@@ -198,6 +202,8 @@ public enum SpawnStrategy {
         //TODO Make a better lying pose, with hitbox and name being correct
         @Override
         public void spawn(TemplateNPC npc, Player player) {
+
+            despawn(npc, player);
             npc.getAIGroups().clear(); // Removes all AI goals
 
             npc.editEntityMeta(PlayerMeta.class, meta -> {
