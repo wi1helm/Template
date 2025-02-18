@@ -25,7 +25,7 @@ public abstract class TemplateNPC extends EntityCreature {
     private Pos spawnPosition = new Pos(0,0,0);
     private PlayerSkin skin;
     private ActionList actionList = ActionList.empty();
-    private Integer viewDistance = 32;
+    private Integer viewDistance = 64;
     private SkinLayer skinLayer = SkinLayer.NONE;
     private GoalSelector goal;
     private final Set<Player> visiblePlayers = new HashSet<>();
