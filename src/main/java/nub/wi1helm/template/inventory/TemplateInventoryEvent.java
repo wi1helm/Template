@@ -1,27 +1,28 @@
 package nub.wi1helm.template.inventory;
 
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.PlayerHand;
 import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.event.trait.InventoryEvent;
 import net.minestom.server.event.trait.ItemEvent;
 import net.minestom.server.event.trait.PlayerInstanceEvent;
-import net.minestom.server.inventory.Inventory;
+import net.minestom.server.inventory.AbstractInventory;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TemplateInventoryEvent implements InventoryEvent, ItemEvent, PlayerInstanceEvent, CancellableEvent {
-    private final Inventory inventory;
+    private final AbstractInventory inventory;
     private final ItemStack itemStack;
     private final Player player;
     private final ClickType clickType;
-    private final Player.Hand hand;
+    private final PlayerHand hand;
     private final int slot;
     private boolean cancelled;
 
-    public TemplateInventoryEvent(@NotNull Player player, @Nullable Inventory inventory, @NotNull ItemStack itemStack,
-                                  @Nullable ClickType clickType, @Nullable Player.Hand hand, int slot) {
+    public TemplateInventoryEvent(@NotNull Player player, @Nullable AbstractInventory inventory, @NotNull ItemStack itemStack,
+                                  @Nullable ClickType clickType, @Nullable PlayerHand hand, int slot) {
         this.player = player;
         this.inventory = inventory;
         this.itemStack = itemStack;
@@ -31,7 +32,7 @@ public class TemplateInventoryEvent implements InventoryEvent, ItemEvent, Player
     }
 
     @Nullable
-    public Inventory getInventory() {
+    public AbstractInventory getInventory() {
         return inventory;
     }
 
@@ -51,7 +52,7 @@ public class TemplateInventoryEvent implements InventoryEvent, ItemEvent, Player
     }
 
     @Nullable
-    public Player.Hand getHand() {
+    public PlayerHand getHand() {
         return hand;
     }
 

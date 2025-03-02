@@ -1,10 +1,7 @@
 package nub.wi1helm.template.npc.goals;
 
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityCreature;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.Player;
+import net.minestom.server.entity.*;
 import net.minestom.server.entity.ai.GoalSelector;
 
 public final class LookAtPlayerGoal extends GoalSelector {
@@ -44,7 +41,7 @@ public final class LookAtPlayerGoal extends GoalSelector {
         }
 
         // Adjust NPC head position based on sitting or standing
-        double sittingYOffset = entityCreature.getPose() == Entity.Pose.SITTING ? entityCreature.getEntityType().height() +0.5 : 0.0;
+        double sittingYOffset = entityCreature.getPose() == EntityPose.SITTING ? entityCreature.getEntityType().height() +0.5 : 0.0;
         Pos targetHeadPosition = target.getPosition().add(0, target.getEyeHeight() + sittingYOffset, 0);
 
         // Make the entity look at the adjusted position

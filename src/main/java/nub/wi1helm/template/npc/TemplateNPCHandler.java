@@ -3,6 +3,7 @@ package nub.wi1helm.template.npc;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.PlayerHand;
 import net.minestom.server.event.entity.EntityAttackEvent;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.event.player.PlayerMoveEvent;
@@ -50,9 +51,19 @@ public class TemplateNPCHandler {
         MinecraftServer.getGlobalEventHandler().addListener(PlayerMoveEvent.class, e -> handleSpawnDespawn(e.getPlayer()));
         MinecraftServer.getGlobalEventHandler().addListener(PlayerSpawnEvent.class, e -> handleSpawnDespawn(e.getPlayer()));
         MinecraftServer.getGlobalEventHandler().addListener(PlayerEntityInteractEvent.class, e -> {
-            if (e.getHand() == Player.Hand.MAIN) handleInteraction(e.getPlayer(), e.getTarget());
+            if (e.getHand() == PlayerHand.MAIN) handleInteraction(e.getPlayer(), e.getTarget());
         });
-        MinecraftServer.getGlobalEventHandler().addListener(EntityAttackEvent.class, e -> handleInteraction((Player) e.getEntity(), e.getTarget()));
+        MinecraftServer.getGlobalEventHandler().addListener(EntityAttackEvent.class, event -> {
+            // e.getEntity() is the *attacker*
+            // e.getTarget() is what is being attacked (the target)
+            Entity attacker = event.getEntity();
+            Entity target = event.getTarget();
+
+            // If we only care when a *player* is attacking something:
+            if (attacker instanceof Player player) {
+                handleInteraction(player, target);
+            }
+        });
     }
 
     /**

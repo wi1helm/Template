@@ -50,7 +50,7 @@ public abstract class TemplateItem {
         if (lore != null) builder.set(ItemComponent.LORE, lore);
         if (stackCount > 0) builder.amount(stackCount);
         if (glint) builder.set(ItemComponent.ENCHANTMENT_GLINT_OVERRIDE, true);
-        if (modelData != null) builder.set(ItemComponent.CUSTOM_MODEL_DATA, modelData);
+        //TODO Add modeldata again
         if (dyeColor != null) builder.set(ItemComponent.DYED_COLOR, dyeColor);
         if (hideTooltip) builder.set(ItemComponent.HIDE_TOOLTIP);
         if (skin != null && material.equals(Material.PLAYER_HEAD)) builder.set(ItemComponent.PROFILE, new HeadProfile(skin));

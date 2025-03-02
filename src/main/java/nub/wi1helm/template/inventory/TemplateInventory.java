@@ -1,4 +1,3 @@
-// File: TemplateInventory.java
 package nub.wi1helm.template.inventory;
 
 import net.kyori.adventure.text.Component;

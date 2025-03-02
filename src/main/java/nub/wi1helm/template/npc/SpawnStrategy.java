@@ -1,17 +1,13 @@
 package nub.wi1helm.template.npc;
 
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.GameMode;
-import net.minestom.server.entity.Player;
+import net.minestom.server.entity.*;
 import net.minestom.server.entity.ai.EntityAIGroupBuilder;
 import net.minestom.server.entity.metadata.PlayerMeta;
 import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
-import net.minestom.server.network.packet.server.play.SetPassengersPacket;
 
 import java.util.List;
 
@@ -69,7 +65,7 @@ public enum SpawnStrategy {
             // Ensure NPC metadata is applied (e.g., skin layers)
             npc.editEntityMeta(PlayerMeta.class, meta -> {
                 npc.getSkinLayer().apply(meta);
-                npc.setPose(Entity.Pose.SITTING);
+                npc.setPose(EntityPose.SITTING);
             });
 
             // Ensure NPC name is displayed above correctly
@@ -91,7 +87,7 @@ public enum SpawnStrategy {
                         : List.of();
 
                 PlayerInfoUpdatePacket.Entry entry = new PlayerInfoUpdatePacket.Entry(
-                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null
+                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null,0
                 );
 
                 player.sendPacket(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry));
@@ -173,7 +169,7 @@ public enum SpawnStrategy {
                         : List.of();
 
                 PlayerInfoUpdatePacket.Entry entry = new PlayerInfoUpdatePacket.Entry(
-                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null
+                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null,0
                 );
 
                 player.sendPacket(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry));
@@ -208,7 +204,7 @@ public enum SpawnStrategy {
 
             npc.editEntityMeta(PlayerMeta.class, meta -> {
                 npc.getSkinLayer().apply(meta); // Apply full skin layers
-                npc.setPose(Entity.Pose.SLEEPING);
+                npc.setPose(EntityPose.SLEEPING);
             });
 
             double offset = 0.3;
@@ -229,7 +225,7 @@ public enum SpawnStrategy {
                         : List.of();
 
                 PlayerInfoUpdatePacket.Entry entry = new PlayerInfoUpdatePacket.Entry(
-                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null
+                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null,0
                 );
 
                 player.sendPacket(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry));
