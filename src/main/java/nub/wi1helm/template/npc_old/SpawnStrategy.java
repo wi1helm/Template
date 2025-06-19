@@ -1,29 +1,29 @@
-package nub.wi1helm.template.npc;
+package nub.wi1helm.template.npc_old;
 
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.*;
 import net.minestom.server.entity.ai.EntityAIGroupBuilder;
 import net.minestom.server.entity.metadata.PlayerMeta;
-import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoRemovePacket;
 import net.minestom.server.network.packet.server.play.PlayerInfoUpdatePacket;
+import nub.wi1helm.template.npc_old.entities.TemplateMountEntity;
 
 import java.util.List;
 
 public enum SpawnStrategy {
     NONE {
         @Override
-        public void spawn(TemplateNPC npc, Player player){}
+        public void spawn(OldTemplateNPC npc, Player player){}
 
         @Override
-        public void despawn(TemplateNPC npc, Player player) {
+        public void despawn(OldTemplateNPC npc, Player player) {
 
         }
     },
     SITTING {
         @Override
-        public void spawn(TemplateNPC npc, Player player) {
+        public void spawn(OldTemplateNPC npc, Player player) {
 
             despawn(npc, player);
 
@@ -42,12 +42,8 @@ public enum SpawnStrategy {
 
 
             // Create a mount entity (Armor Stand)
-            Entity mount = new Entity(EntityType.ARMOR_STAND);
-            mount.editEntityMeta(ArmorStandMeta.class, meta -> {
-                meta.setInvisible(true);
-                meta.setHasNoGravity(true);
-                meta.setMarker(true); // Ensures it does not interfere with collisions
-            });
+            TemplateMountEntity mount = new TemplateMountEntity();
+
 
             // Set mount position slightly lower for sitting effect
             Pos mountPosition = npc.getSpawnPosition();
@@ -99,7 +95,7 @@ public enum SpawnStrategy {
         }
 
         @Override
-        public void despawn(TemplateNPC npc, Player player) {
+        public void despawn(OldTemplateNPC npc, Player player) {
             // Remove NPC's name tag
             npc.getName().getText().forEach((integer, entity) -> {
                 player.sendPacket(new DestroyEntitiesPacket(entity.getEntityId()));
@@ -128,7 +124,7 @@ public enum SpawnStrategy {
     },
     STANDING {
         @Override
-        public void spawn(TemplateNPC npc, Player player) {
+        public void spawn(OldTemplateNPC npc, Player player) {
 
             despawn(npc, player);
 
@@ -145,12 +141,6 @@ public enum SpawnStrategy {
                 );
             }
 
-
-
-            npc.editEntityMeta(PlayerMeta.class, meta -> {
-                npc.getSkinLayer().apply(meta); // Apply full skin layers
-            });
-
             double offset = 0.3;
             double baseHeight = npc.getEntityType().height();
 
@@ -164,22 +154,14 @@ public enum SpawnStrategy {
             });
 
             if (npc.getEntityType() == EntityType.PLAYER) {
-                List<PlayerInfoUpdatePacket.Property> properties = (npc.getSkin() != null)
-                        ? List.of(new PlayerInfoUpdatePacket.Property("textures", npc.getSkin().textures(), npc.getSkin().signature()))
-                        : List.of();
 
-                PlayerInfoUpdatePacket.Entry entry = new PlayerInfoUpdatePacket.Entry(
-                        npc.getUuid(), npc.getIdentifier(), properties, false, 0, GameMode.SURVIVAL, null, null,0
-                );
-
-                player.sendPacket(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER, entry));
             }
 
             npc.updateNewViewer(player);
         }
 
         @Override
-        public void despawn(TemplateNPC npc, Player player) {
+        public void despawn(OldTemplateNPC npc, Player player) {
             npc.getName().getText().forEach((integer, entity) -> {
                 player.sendPacket(new DestroyEntitiesPacket(entity.getEntityId()));
                 entity.updateOldViewer(player);
@@ -197,7 +179,7 @@ public enum SpawnStrategy {
     LAYING {
         //TODO Make a better lying pose, with hitbox and name being correct
         @Override
-        public void spawn(TemplateNPC npc, Player player) {
+        public void spawn(OldTemplateNPC npc, Player player) {
 
             despawn(npc, player);
             npc.getAIGroups().clear(); // Removes all AI goals
@@ -235,7 +217,7 @@ public enum SpawnStrategy {
         }
 
         @Override
-        public void despawn(TemplateNPC npc, Player player) {
+        public void despawn(OldTemplateNPC npc, Player player) {
             npc.getName().getText().forEach((integer, entity) -> {
                 player.sendPacket(new DestroyEntitiesPacket(entity.getEntityId()));
                 entity.updateOldViewer(player);
@@ -252,7 +234,7 @@ public enum SpawnStrategy {
     };
 
     // Abstract method for each strategy to implement
-    public abstract void spawn(TemplateNPC npc, Player player);
+    public abstract void spawn(OldTemplateNPC npc, Player player);
 
-    public abstract void despawn(TemplateNPC npc, Player player);
+    public abstract void despawn(OldTemplateNPC npc, Player player);
 }

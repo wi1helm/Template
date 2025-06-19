@@ -1,4 +1,4 @@
-package nub.wi1helm.template.npc;
+package nub.wi1helm.template.npc.player;
 
 import net.minestom.server.entity.metadata.PlayerMeta;
 

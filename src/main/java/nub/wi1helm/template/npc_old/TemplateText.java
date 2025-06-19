@@ -1,10 +1,8 @@
-package nub.wi1helm.template.npc;
+package nub.wi1helm.template.npc_old;
 
 import net.kyori.adventure.text.Component;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.metadata.display.AbstractDisplayMeta;
 import net.minestom.server.entity.metadata.display.TextDisplayMeta;
+import nub.wi1helm.template.npc_old.entities.TemplateTextEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +11,7 @@ import java.util.stream.IntStream;
 
 public class TemplateText {
 
-    private final Map<Integer, Entity> text;
+    private final Map<Integer, TemplateTextEntity> text;
 
     private TemplateText() {
         text = new HashMap<>();
@@ -37,11 +35,11 @@ public class TemplateText {
 
         }
     }
-    public Map<Integer, Entity> getText() {
+    public Map<Integer, TemplateTextEntity> getText() {
         return text;
     }
 
-    public Entity getRow(Integer row) {
+    public TemplateTextEntity getRow(Integer row) {
         return text.get(row);
     }
 
@@ -53,16 +51,8 @@ public class TemplateText {
         return new TemplateText();
     }
 
-    private Entity createEntity(Component component) {
-        Entity entity = new Entity(EntityType.TEXT_DISPLAY);
-
-        entity.editEntityMeta(TextDisplayMeta.class, meta -> {
-           meta.setText(component);
-           meta.setBillboardRenderConstraints(AbstractDisplayMeta.BillboardConstraints.CENTER);
-           meta.setHasNoGravity(true);
-        });
-
-        return entity;
+    private TemplateTextEntity createEntity(Component component) {
+        return new TemplateTextEntity(component);
     }
 
 }

@@ -1,7 +1,8 @@
-package nub.wi1helm.template.npc.actions;
+package nub.wi1helm.template.npc_old.oldactions;
 
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
+import nub.wi1helm.template.npc.actions.AbstractAction;
 
 
 public abstract class MenuAction extends AbstractAction {

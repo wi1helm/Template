@@ -1,175 +1,131 @@
 package nub.wi1helm.template.npc;
 
-import net.kyori.adventure.text.Component;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.EntityCreature;
+import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.entity.ai.GoalSelector;
-import net.minestom.server.network.packet.server.play.TeamsPacket;
-import net.minestom.server.scoreboard.Team;
-import net.minestom.server.tag.Tag;
+import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
+import net.minestom.server.utils.chunk.ChunkUtils;
+import nub.wi1helm.template.npc.actions.ActionList;
+import nub.wi1helm.template.npc.hologram.TemplateTextNPC;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-public abstract class TemplateNPC extends EntityCreature {
+public abstract class TemplateNPC extends Entity {
 
-
-    private TemplateText name = TemplateText.empty();
-    private SpawnStrategy spawnStrategy = SpawnStrategy.STANDING;
-    private Pos spawnPosition = new Pos(0,0,0);
-    private PlayerSkin skin;
+    private Integer viewDistance = 10;
     private ActionList actionList = ActionList.empty();
-    private Integer viewDistance = 64;
-    private SkinLayer skinLayer = SkinLayer.NONE;
+    // Todo See if goal can be changed for something else later on.
     private GoalSelector goal;
-    private final Set<Player> visiblePlayers = new HashSet<>();
-    // Finals
-    private final String identifier;
-
 
     public TemplateNPC(@NotNull EntityType entityType) {
         super(entityType);
-        this.identifier = UUID.randomUUID().toString().substring(0,16);
-        setTag(Tag.String("uuid"), identifier);
+        setAutoViewable(false);
         TemplateNPCHandler.registerNPC(this);
+    }
 
-        Team team = MinecraftServer.getTeamManager().createBuilder("NPC").nameTagVisibility(TeamsPacket.NameTagVisibility.NEVER).collisionRule(TeamsPacket.CollisionRule.NEVER).build();
+    public void check(Player player) {
+        this.personalize(player);
 
-        team.addMember(identifier);
+        if (inView(player) && inLoadedChunk(player)) {
+            // In view try to spawn
+            // If player already is a viewer return
+            if (isViewer(player)) return;
+            onSpawn(player);
+            spawn(player);
+            return;
+        }
+        // if not in view try to despawn
+        // if player already doesnt see entity return
+        if (!isViewer(player)) return;
+        despawn(player);
+        onDespawn(player);
+    }
+
+    protected void spawn(Player player) {
+
+        this.addViewer(player);
+
+        this.updateNewViewer(player);
+
+        if (this instanceof Posable) {
+            ((Posable) this).handlePose(this, player);
+        }
+
+        if (this instanceof Namable) {
+            this.getPassengers().forEach(entity -> {
+                if (entity instanceof TemplateTextNPC text) {
+                    text.spawn(player);
+                }
+            });
+        }
+    }
+
+    protected void despawn(Player player) {
+
+        this.removeViewer(player);
+        this.updateOldViewer(player);
+        if (this.getVehicle() == null) return;
+        this.getVehicle().updateOldViewer(player);
+        this.getVehicle().remove();
+    }
+
+    protected abstract void onSpawn(Player player);
+    protected abstract void onDespawn(Player player);
+
+
+
+    public void interact(Player player) {
+        if (getActionList().isEmpty()) return;
+        getActionList().executeNext(player);
     }
 
     abstract protected void personalize(Player player);
 
 
-
-    // Name Methods
-
-    public TemplateText getName() {
-        return this.name;
+    public boolean inView(Player player) {
+        return this.getDistance(player) <= getViewDistance();
     }
 
-    public void setName(TemplateText name) {
-        this.name = name;
+    public boolean inLoadedChunk(Player player) {
+        // Todo fix this so its removed when the chunk is not renderd
+        return true;
     }
 
-    protected void updateName(TemplateText name) {
-        this.name = name;
-
-        name.getText().forEach((integer, entity) -> entity.getViewers().forEach(player -> player.sendPacket(entity.getMetadataPacket())));
-
-    }
-    protected void updateRow(Integer row, Component text) {
-        this.name.setRow(row, text);
-
-        name.getText().forEach((integer, entity) -> entity.getViewers().forEach(player -> player.sendPacket(entity.getMetadataPacket())));
+    @Override
+    public boolean isActive() {
+        return super.isActive();
     }
 
-    // Spawn & Despawn Methods
-
-    protected void setSpawnStrategy(SpawnStrategy spawnStrategy){
-        this.spawnStrategy = spawnStrategy;
+    // Setters
+    public void setViewDistance(Integer distance) {
+        this.viewDistance = distance;
     }
-
-    public void spawn(Player player) {
-        if (!shouldSpawn(player)) return;
-        this.personalize(player);
-        this.markVisible(player);
-        this.spawnStrategy.spawn(this, player);
+    public void setActionList(ActionList actionList) {
+        this.actionList = actionList;
     }
-
-    private boolean shouldSpawn(Player player) {
-        return player.getPosition().distance(this.getSpawnPosition()) <= viewDistance && !isVisibleTo(player);
-    }
-
-    public void despawn(Player player) {
-        if (!shouldDespawn(player)) return;
-        this.spawnStrategy.despawn(this, player);
-        this.markInvisible(player);
-    }
-
-    private boolean shouldDespawn(Player player) {
-        return player.getPosition().distance(this.getSpawnPosition()) > viewDistance && isVisibleTo(player);
+    public void setVehicle(Entity entity) {
+        this.vehicle = entity;
     }
 
 
-    // Spawn Position Methods
-
-    public Pos getSpawnPosition() {
-        return spawnPosition;
-    }
-
-    public void setSpawnPosition(Pos spawnPosition) {
-        this.spawnPosition = spawnPosition;
-    }
-
-    // Identifier Methods
-
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-    public PlayerSkin getSkin() {
-        return skin;
-    }
-
-    public void setSkin(PlayerSkin skin) {
-        this.skin = skin;
-    }
-
-    public Integer getViewDistance() {
-        return viewDistance;
-    }
-
-    public void setViewDistance(Integer viewDistance) {
-        this.viewDistance = viewDistance;
-    }
-// Action Methods
-
-    public final void onInteract(Player player) {
-        if (getActionList().isEmpty()) return;
-        getActionList().executeNext(player);
-    }
-
+    // Getters
+    public Integer getViewDistance() {return this.viewDistance;}
     public ActionList getActionList() {
         return actionList;
     }
 
-    public void setActionList(ActionList actionList) {
-        this.actionList = actionList;
+
+    // Overwrite
+
+    @Override
+    public void sendPacketToViewers(@NotNull SendablePacket packet) {
+        // Here so methods
     }
 
-    public void setSkinLayer(SkinLayer skinLayer) {
-        this.skinLayer = skinLayer;
-    }
 
-    public SkinLayer getSkinLayer() {
-        return skinLayer;
-    }
-
-    public GoalSelector getGoal() {
-        return goal;
-    }
-
-    public void setGoal(GoalSelector goal) {
-        this.goal = goal;
-    }
-
-    public boolean isVisibleTo(Player player) {
-        return visiblePlayers.contains(player);
-    }
-
-    public void markVisible(Player player) {
-        visiblePlayers.add(player);
-    }
-
-    public void markInvisible(Player player) {
-        visiblePlayers.remove(player);
-    }
 }
-

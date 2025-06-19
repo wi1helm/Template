@@ -1,4 +1,4 @@
-package nub.wi1helm.template.npc;
+package nub.wi1helm.template.npc.actions;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;

@@ -1,4 +1,4 @@
-package nub.wi1helm.template.npc;
+package nub.wi1helm.template.npc_old;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Entity;
@@ -8,33 +8,31 @@ import net.minestom.server.event.entity.EntityAttackEvent;
 import net.minestom.server.event.player.PlayerEntityInteractEvent;
 import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
-import nub.wi1helm.template.Template;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-public class TemplateNPCHandler {
-    private static final Map<UUID, TemplateNPC> npcRegistry = new HashMap<>();
+public class oldTemplateNPCHandler {
+    private static final Map<String, OldTemplateNPC> npcRegistry = new HashMap<>();
 
     /**
      * Registers an NPC in the registry.
      *
      * @param npc The NPC to register.
      */
-    public static void registerNPC(TemplateNPC npc) {
-        npcRegistry.put(npc.getUuid(), npc);
+    public static void registerNPC(OldTemplateNPC npc) {
+        npcRegistry.put(npc.getIdentifier(), npc);
     }
 
     /**
      * Retrieves an NPC by its identifier.
      *
-     * @param uuid The identifier of the NPC.
+     * @param identifier The identifier of the NPC.
      * @return The NPC instance, or null if not found.
      */
-    public static TemplateNPC getNPCByIdentifier(UUID uuid) {
-        return npcRegistry.get(uuid);
+    public static OldTemplateNPC getNPCByIdentifier(String identifier) {
+        return npcRegistry.get(identifier);
     }
 
     /**
@@ -42,7 +40,7 @@ public class TemplateNPCHandler {
      *
      * @return A collection of all registered NPCs.
      */
-    public static Collection<TemplateNPC> getAllNPCs() {
+    public static Collection<OldTemplateNPC> getAllNPCs() {
         return npcRegistry.values();
     }
 
@@ -50,8 +48,8 @@ public class TemplateNPCHandler {
      * Initializes the event listeners for spawning, despawning, interaction, and attack handling.
      */
     public static void initialize() {
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerMoveEvent.class, e -> handleCheck(e.getPlayer()));
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerSpawnEvent.class, e -> handleCheck(e.getPlayer()));
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerMoveEvent.class, e -> handleSpawnDespawn(e.getPlayer()));
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerSpawnEvent.class, e -> handleSpawnDespawn(e.getPlayer()));
         MinecraftServer.getGlobalEventHandler().addListener(PlayerEntityInteractEvent.class, e -> {
             if (e.getHand() == PlayerHand.MAIN) handleInteraction(e.getPlayer(), e.getTarget());
         });
@@ -73,9 +71,10 @@ public class TemplateNPCHandler {
      *
      * @param player The player triggering the event.
      */
-    private static void handleCheck(Player player) {
-        for (TemplateNPC npc : getAllNPCs()) {
-            npc.check(player);
+    private static void handleSpawnDespawn(Player player) {
+        for (OldTemplateNPC npc : getAllNPCs()) {
+            npc.spawn(player);
+            npc.despawn(player);
         }
     }
 
@@ -86,8 +85,8 @@ public class TemplateNPCHandler {
      * @param target The entity being interacted with.
      */
     private static void handleInteraction(Player player, Entity target) {
-        if (target instanceof TemplateNPC npc) {
-            npc.interact(player);
+        if (target instanceof OldTemplateNPC npc) {
+            npc.onInteract(player);
         }
     }
 }

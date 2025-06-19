@@ -2,6 +2,7 @@ package nub.wi1helm.template;
 
 import nub.wi1helm.template.inventory.TemplateHandler;
 import nub.wi1helm.template.npc.TemplateNPCHandler;
+import nub.wi1helm.template.npc_old.oldTemplateNPCHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
