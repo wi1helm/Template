@@ -1,42 +1,48 @@
 package nub.wi1helm.template.npc.mob;
 
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
 import net.minestom.server.network.packet.server.play.TeamsPacket;
 import net.minestom.server.scoreboard.Team;
-import nub.wi1helm.template.npc.Namable;
-import nub.wi1helm.template.npc.Posable;
 import nub.wi1helm.template.npc.TemplateNPC;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class TemplateMobNPC extends TemplateNPC implements Posable, Namable {
+import java.util.Collection;
+import java.util.List;
 
+public abstract class TemplateMobNPC extends TemplateNPC {
+    public TemplateMobNPC(@NotNull EntityType entityType, Instance instance) {
+        super(entityType, instance);
+        initTeam();
+    }
 
-    public TemplateMobNPC(@NotNull EntityType entityType) {
-        super(entityType);
+    public TemplateMobNPC(@NotNull EntityType entityType, Instance instance, Pos pos) {
+        super(entityType, instance, pos);
+        initTeam();
+    }
 
+    private void initTeam() {
         Team team = MinecraftServer.getTeamManager().createBuilder("NPC").nameTagVisibility(TeamsPacket.NameTagVisibility.NEVER).collisionRule(TeamsPacket.CollisionRule.NEVER).build();
         team.addMember(getUuid().toString());
     }
 
-    // Implement
-
-
     @Override
-    protected void onSpawn(Player player) {
+    public Collection<SendablePacket> getNpcSpawnPackets(Player player) {
+        personalize(player);
+        return List.of(
+                getSpawnPacket(),
+                getMetadataPacket()
 
+        );
     }
 
     @Override
-    protected void onDespawn(Player player) {
-
-    }
-
-    // Overwrite
-    @Override
-    public void sendPacketToViewers(@NotNull SendablePacket packet) {
-        // Here so methods
+    public Collection<SendablePacket> getNpcDespawnPackets(Player player) {
+        return List.of(new DestroyEntitiesPacket(getEntityId()));
     }
 }

@@ -1,15 +1,17 @@
 package nub.wi1helm.template.inventory;
 
 import net.kyori.adventure.text.Component;
+import net.minestom.server.color.DyeColor;
+import net.minestom.server.component.DataComponent;
+import net.minestom.server.component.DataComponents;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.inventory.AbstractInventory;
-import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.component.CustomData;
-import net.minestom.server.item.component.DyedItemColor;
 import net.minestom.server.item.component.HeadProfile;
+import net.minestom.server.item.component.TooltipDisplay;
 import net.minestom.server.tag.Tag;
 
 import java.util.*;
@@ -23,7 +25,7 @@ public abstract class TemplateItem {
     private int stackCount = 1;
     private boolean glint;
     private Integer modelData;
-    private DyedItemColor dyeColor;
+    private DyeColor dyeColor;
     private boolean hideTooltip;
     private PlayerSkin skin;
     private List<CustomData> customData;
@@ -46,14 +48,14 @@ public abstract class TemplateItem {
 
         ItemStack.Builder builder = ItemStack.builder(this.material);
 
-        if (name != null) builder.set(ItemComponent.ITEM_NAME, name);
-        if (lore != null) builder.set(ItemComponent.LORE, lore);
+        if (name != null) builder.set(DataComponents.ITEM_NAME, name);
+        if (lore != null) builder.set(DataComponents.LORE, lore);
         if (stackCount > 0) builder.amount(stackCount);
-        if (glint) builder.set(ItemComponent.ENCHANTMENT_GLINT_OVERRIDE, true);
+        if (glint) builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         //TODO Add modeldata again
-        if (dyeColor != null) builder.set(ItemComponent.DYED_COLOR, dyeColor);
-        if (hideTooltip) builder.set(ItemComponent.HIDE_TOOLTIP);
-        if (skin != null && material.equals(Material.PLAYER_HEAD)) builder.set(ItemComponent.PROFILE, new HeadProfile(skin));
+        if (dyeColor != null) builder.set(DataComponents.DYED_COLOR, dyeColor);
+        if (hideTooltip) builder.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.EMPTY);
+        if (skin != null && material.equals(Material.PLAYER_HEAD)) builder.set(DataComponents.PROFILE, new HeadProfile(skin));
         if (identifier != null) builder.setTag(Tag.UUID("uuid"),identifier);
         return builder.build();
     }
@@ -82,7 +84,7 @@ public abstract class TemplateItem {
         this.modelData = modelData;
     }
 
-    public void setDyeColor(DyedItemColor dyeColor) {
+    public void setDyeColor(DyeColor dyeColor) {
         this.dyeColor = dyeColor;
     }
 

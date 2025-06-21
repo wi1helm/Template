@@ -29,7 +29,7 @@ public class TemplateHandler {
                     e.getPlayer(),
                     e.getInventory(),
                     e.getClickedItem(),
-                    e.getClickType(),
+                    e.getClick(),
                     null,
                     e.getSlot()
             );
