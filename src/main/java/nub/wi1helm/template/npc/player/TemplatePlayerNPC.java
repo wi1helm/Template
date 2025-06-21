@@ -43,6 +43,7 @@ public abstract class TemplatePlayerNPC extends TemplateNPC {
 
     @Override
     public Collection<SendablePacket> getNpcSpawnPackets(Player player) {
+        addViewer(player);
         personalize(player);
         List<PlayerInfoUpdatePacket.Property> properties = (skin != null)
                 ? List.of(new PlayerInfoUpdatePacket.Property("textures", skin.textures(), skin.signature()))
@@ -81,4 +82,8 @@ public abstract class TemplatePlayerNPC extends TemplateNPC {
         editEntityMeta(PlayerMeta.class, this.skinLayer::apply);
     }
 
+    @Override
+    public void sendPacketToViewersAndSelf(@NotNull SendablePacket packet) {
+        // HEHE Do nothing cause hit fucking sucks
+    }
 }

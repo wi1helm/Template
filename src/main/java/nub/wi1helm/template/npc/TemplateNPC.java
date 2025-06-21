@@ -12,7 +12,6 @@ import java.util.Collection;
 
 public abstract class TemplateNPC extends Entity {
 
-
     public TemplateNPC(@NotNull EntityType entityType, Instance instance) {
         super(entityType);
         setInstance(instance);

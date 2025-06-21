@@ -33,6 +33,7 @@ public abstract class TemplateMobNPC extends TemplateNPC {
 
     @Override
     public Collection<SendablePacket> getNpcSpawnPackets(Player player) {
+        addViewer(player);
         personalize(player);
         return List.of(
                 getSpawnPacket(),
