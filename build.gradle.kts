@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     // Minestom
-    implementation("net.minestom:minestom-snapshots:1_21_5-69b9a5d844")
+    implementation("net.minestom:minestom:2025.08.12-1.21.8")
 
     implementation("net.kyori:adventure-text-minimessage:4.17.0") // MiniMessage
     implementation("net.kyori:adventure-text-serializer-gson:4.17.0")
